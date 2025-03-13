@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"go-snippets-test/config"
 	"io"
 	"log"
 	"net/http"
@@ -14,11 +15,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-)
-
-const (
-	Secret  = "" // 替换为你的密钥
-	Webhook = "" // 替换为你的 webhook
 )
 
 type DingTalkBot struct {
@@ -30,9 +26,14 @@ type DingTalkBot struct {
 }
 
 func NewDingTalkBot() *DingTalkBot {
+	// 读取配置文件
+	_ = config.InitConfig()
+	webhook := config.GetConfig().DingBot.Webhook
+	secret := config.GetConfig().DingBot.Secret
+
 	bot := &DingTalkBot{
-		webhook:  Webhook,
-		secret:   Secret,
+		webhook:  webhook,
+		secret:   secret,
 		cacheTTL: time.Minute, // 消息缓存 1 分钟
 		logger:   log.Default(),
 	}
